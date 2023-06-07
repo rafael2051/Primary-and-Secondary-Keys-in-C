@@ -38,8 +38,6 @@ int inserirIndicePrimario(TABELA_P * table, int chave, int end){
 }
 
 
-
-
 int buscarEndereco(TABELA_P * table, int chave){
 	for(int i = 0;i < TAM;i++){
 		if(table[i].chave == chave)
@@ -203,6 +201,8 @@ int main(){
 	
 	
 	
-	
+
 	return 0;
+	
+	
 }
