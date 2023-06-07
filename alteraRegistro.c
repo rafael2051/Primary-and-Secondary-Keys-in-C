@@ -58,3 +58,68 @@ int excluirIndicePrimario(TABELA_P * table, int chave){
 		}
 	}
 }
+
+
+int buscaIndiceSecundario(TABELA_S * table, int chave_s){
+	for(int i = 0;i < TAM;i++){
+		if(table[i].chave_secundaria == chave_s){
+			return i;
+		}
+	}
+	return -1;
+}
+
+
+
+void removeChave(TABELA_S * table_s, int indice, int chave_p){
+	
+	NO * p = table_s[indice].chave_primaria;
+	if(p->valor == chave_p){
+		table_s[indice].chave_primaria = p->prox;
+		p->prox = NULL;
+		free(p);
+	}
+	NO * ant;
+	ant = NULL;
+	while(p->prox){
+		ant = p;
+		p = p->prox;
+		if(p->valor == chave_p){
+			ant->prox = p->prox;
+			p->prox = NULL;
+			free(p);
+		}
+	}
+	
+}
+
+void insereChave(TABELA_S * table_s, int indice, int chave_p){
+	NO * novo = (NO *)malloc(sizeof(NO));
+	novo->valor = chave_p;
+	novo->prox = table_s[indice].chave_primaria;
+	table_s[indice].chave_primaria = novo;
+	return;
+}
+
+
+
+void alteraRegistro(FILE * f, TABELA_P * table_p, TABELA_S * table_s, int nroUSPX, int cursoY){
+
+	int end = buscarEndereco(table_p, nroUSPX);
+	int curso_antigo;
+	if(end < 0) return;
+	REGISTRO aux;
+	fseek(f, end * sizeof(REGISTRO), SEEK_SET);
+	fread(&aux, sizeof(REGISTRO), 1, f);
+	if(aux.curso != cursoY){
+		curso_antigo = aux.curso;
+		aux.curso = cursoY;
+		fseek(f, -sizeof(REGISTRO), SEEK_CUR);
+		fwrite(aux, sizeof(REGISTRO), 1, f);
+		int indice = buscaIndiceSecundario(table_s, curso_antigo);
+		removeChave(table_s, indice, nroUSPX);
+		indice = buscaIndiceSecundario(table_s, cursoY);
+		insereChave(table_s, indice, nroUSPX);
+		
+	}
+}
