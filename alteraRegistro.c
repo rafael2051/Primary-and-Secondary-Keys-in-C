@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+#define TAM 1000
+
 typedef struct {
 	int nroUSP;
 	int curso;
@@ -37,4 +40,21 @@ int inserirIndicePrimario(TABELA_P * table, int chave, int end){
 
 
 
-int buscarEndereco(TABELA_)
+int buscarEndereco(TABELA_P * table, int chave){
+	for(int i = 0;i < TAM;i++){
+		if(table[i].chave == chave)
+			return table[i].end;
+	}
+	return -1;
+}
+
+int excluirIndicePrimario(TABELA_P * table, int chave){
+	for(int i =0; i < TAM;i++){
+		if(table[i].chave == chave){
+			int end  table[i].end;
+			excluiChave(table, i);
+			return end;
+			
+		}
+	}
+}
